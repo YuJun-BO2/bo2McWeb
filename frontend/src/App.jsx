@@ -13,7 +13,9 @@ function App() {
         <div className="text-xl font-bold"><a href="/">Bo2 Minecraft Server</a></div>
         <nav className="space-x-6">
           <a href="https://www.bo2.tw" className="hover:underline">BO2首頁</a>
+          <a href="today" className="hover:underline">公告</a>
           <a href="today" className="hover:underline">本屆模組包導覽</a>
+          <a href="today" className="hover:underline">伺服器狀態</a>
           <a href="history" className="hover:underline">歷史</a>
           <a href="players" className="hover:underline">玩家紀錄</a>
           <a href="#" className="hover:underline">登入</a>
