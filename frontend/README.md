@@ -21,8 +21,7 @@ npm run build
 
 ## Github Page 部屬
 
-本專案前端會自動部署至 GitHub Pages，僅需至 GitHub 頁面中的 Settings > Pages 中設定即可。
-若你是從本專案 fork 而來，建議完成建構後（npm run build），再啟用 GitHub Pages 並選擇：
+本專案前端會自動部署至 GitHub Pages，需至 GitHub 頁面中的 Settings > Pages 中設定，並在Action頁面中啟用Workflows。
 
 - 分支：gh-pages
 
