@@ -9,7 +9,7 @@ function App() {
   return (
     <div>
       <h1>Bo2 Minecraft Server</h1>
-      <h3>since 2021 in Taoyuan, Taiwan</h3>
+      <h3>since 2021</h3>
     </div>
   )
 }
