@@ -25,7 +25,7 @@ function App() {
       {/* 主要內容 */}
       <main className="flex-grow flex flex-col items-center justify-center text-center p-4">
         <div className="w-full max-w-3xl px-8 py-10 bg-black/80 rounded-2xl py-20">
-          <img src="/bo2_Full_size.png" alt="logo" className="w-64 mx-auto mb-10" />
+          <img src="bo2_Full_size.png" alt="logo" className="w-64 mx-auto mb-10" />
           <h1 className="text-4xl font-bold text-white mb-10">Bo2 Minecraft Server</h1>
           <p className="text-gray-300 mt-4 mb-10">since 2021</p>
 
