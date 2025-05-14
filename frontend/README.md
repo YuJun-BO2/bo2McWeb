@@ -14,4 +14,4 @@ npm run dev
 ```bash
 npm run build
 ```
-# 然後將 dist/ 資料夾內容部署到 IIS 的 wwwroot 或其他靜態主機
+最後請 dist/ 資料夾內容部署到 IIS 的 wwwroot 或其他靜態主機
