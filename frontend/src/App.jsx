@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import './App.css'
+import { AnimatePresence } from 'framer-motion';
 import Entrance from './Entrance.jsx'
+import MainContent from './MainContent.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
-
+  const [entered, setEntered] = useState(false); // 決定是否顯示Entrance
   return (
     <div className="flex flex-col min-h-screen font-sans text-gray-800">
       {/* 導覽列 */}
@@ -19,7 +21,13 @@ function App() {
 
       {/* 主要內容 */}
       <main className="flex-grow flex flex-col items-center justify-center text-center p-4">
-        {!entered ? <Entrance onEnter={() => setEntered(true)} /> : <MainContent />}
+        <AnimatePresence mode="wait">
+          {!entered ? (
+          <Entrance key="entrance" onEnter={() => setEntered(true)} />
+          ) : (
+          <MainContent key="main" />
+          )}
+        </AnimatePresence>
       </main>
 
       {/* 頁尾 */}
