@@ -11,7 +11,7 @@ function App() {
     <div className="flex flex-col min-h-screen font-sans text-gray-800">
       {/* 導覽列 */}
       <header className="bg-gray-900/80 text-white px-6 py-4 flex justify-between items-center">
-        <div className="text-xl font-bold"><a href="/bo2McWeb/">Bo2 Minecraft Server</a></div>
+        <div className="text-xl font-bold"><a href="/bo2McWeb/">Bo2 Minecraft Community</a></div>
         <nav className="space-x-6">
           <a href="announcement" className="hover:underline">公告</a>
           <a href="status" className="hover:underline">狀態</a>

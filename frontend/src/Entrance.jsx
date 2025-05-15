@@ -26,7 +26,7 @@ function Entrance({ onEnter }) {
                 href="#"
                 className="inline-block flex-1 px-6 py-3 mx-10 my-8 bg-green-600 text-white rounded hover:bg-green-700 transition"
                 >
-                    登入網站
+                    加入開發
                 </a>
                 <a
                 href="https://discord.gg/cCrQUAkqtf"
