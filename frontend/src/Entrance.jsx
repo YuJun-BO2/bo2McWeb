@@ -1,9 +1,17 @@
 // Entrance.jsx
 import { useState } from 'react'
+import { motion } from 'framer-motion';
 
 function Entrance({ onEnter }) {
     return (
-        <div id="entrance" className="w-full max-w-3xl px-8 py-10 bg-black/80 rounded-2xl py-20">
+        <motion.div 
+            key="entrance"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="w-full max-w-3xl px-8 py-10 bg-black/80 rounded-2xl py-20"
+        >
             <img src="bo2_Full_size.png" alt="logo" className="w-64 mx-auto mb-10" />
             <h1 className="text-4xl font-bold text-white mb-5">Bo2 Minecraft Community</h1>
             <p className="text-gray-300 mt-4 mb-10">since 2021</p>
@@ -27,7 +35,7 @@ function Entrance({ onEnter }) {
                     加入 Discord
                 </a>
             </div>
-        </div>
+        </motion.div>
   )
 }
 
