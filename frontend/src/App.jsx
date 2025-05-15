@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Entrance from './Entrance.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -12,30 +11,15 @@ function App() {
       <header className="bg-gray-900/80 text-white px-6 py-4 flex justify-between items-center">
         <div className="text-xl font-bold"><a href="/">Bo2 Minecraft Server</a></div>
         <nav className="space-x-6">
-          <a href="https://www.bo2.tw" className="hover:underline">BO2首頁</a>
           <a href="announcement" className="hover:underline">公告</a>
-          <a href="today" className="hover:underline">本屆模組包導覽</a>
-          <a href="status" className="hover:underline">伺服器狀態</a>
-          <a href="history" className="hover:underline">歷史</a>
-          <a href="players" className="hover:underline">玩家紀錄</a>
-          <a href="#" className="hover:underline">登入</a>
+          <a href="status" className="hover:underline">狀態</a>
+          <a href="support" className="hover:underline">支援</a>
         </nav>
       </header>
 
       {/* 主要內容 */}
       <main className="flex-grow flex flex-col items-center justify-center text-center p-4">
-        <div className="w-full max-w-3xl px-8 py-10 bg-black/80 rounded-2xl py-20">
-          <img src="bo2_Full_size.png" alt="logo" className="w-64 mx-auto mb-10" />
-          <h1 className="text-4xl font-bold text-white mb-10">Bo2 Minecraft Server</h1>
-          <p className="text-gray-300 mt-4 mb-10">since 2021</p>
-
-          <a
-           href="https://discord.gg/cCrQUAkqtf"
-           className="inline-block px-6 py-3 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
-          >
-           加入 Discord
-          </a>
-         </div>
+        {!entered ? <Entrance onEnter={() => setEntered(true)} /> : <MainContent />}
       </main>
 
       {/* 頁尾 */}
