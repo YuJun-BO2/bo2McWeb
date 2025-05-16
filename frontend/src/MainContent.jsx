@@ -24,7 +24,7 @@ function MainContent() {
                 <div className="flex flex-col items-center md:items-start gap-4 md:ml-8">
                     <p className="text-gray-800">您似乎尚未登入或未綁定玩家資料</p>
 
-                    <a
+                    <a  href="https://discord.com/oauth2/authorize?client_id=1372575210229989466&response_type=code&redirect_uri=https%3A%2F%2Fmcc.bo2.tw%2Fapi%2Fauth%2Fdiscord%2Fcallback&scope=identify"
                         className="cursor-pointer px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
                     >
                         登入帳號
