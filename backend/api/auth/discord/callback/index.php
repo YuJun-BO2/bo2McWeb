@@ -1,6 +1,6 @@
 <?php
 // callback.php
-$config = require __DIR__ . '/.env.php';
+$config = require __DIR__ . '/auth.env.php';
 
 $client_id = $config['DISCORD_CLIENT_ID'];
 $client_secret = $config['DISCORD_CLIENT_SECRET'];
