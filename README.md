@@ -25,10 +25,6 @@ bo2McWeb/
 ## 👥 貢獻指南
 Fork 本專案
 
-建立新分支 git checkout -b feature/你的功能名稱
-
-提交修改並 push：git push origin feature/你的功能名稱
-
 建立 Pull Request
 
 歡迎任何貢獻者！

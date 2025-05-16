@@ -12,7 +12,7 @@ function Entrance({ onEnter }) {
             transition={{ duration: 0.2 }}
             className="w-full max-w-3xl px-8 py-10 bg-black/80 rounded-2xl py-20"
         >
-            <img src="bo2_Full_size.png" alt="logo" className="w-64 mx-auto mb-10" />
+            <img src="/bo2_Full_size.png" alt="logo" className="w-64 mx-auto mb-10" />
             <h1 className="text-4xl font-bold text-white mb-5">Bo2 Minecraft Community</h1>
             <p className="text-gray-300 mt-4 mb-10">since 2021</p>
             <div className="flex flex-col">
@@ -23,8 +23,8 @@ function Entrance({ onEnter }) {
                     進入網站
                 </a>
                 <a
-                href="#"
-                className="inline-block flex-1 px-6 py-3 mx-10 my-8 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                href="https://github.com/YuJun-BO2/bo2McWeb/"
+                className="inline-block flex-1 px-6 py-3 mx-10 my-8 bg-gray-200 text-gray-900 rounded hover:bg-gray-400 transition"
                 >
                     加入開發
                 </a>

@@ -4,6 +4,8 @@
 
 ## 安裝與開發
 
+開發前，請確保已安裝Node.js。
+
 ```bash
 npm install
 npm run dev
@@ -18,13 +20,3 @@ npm run build
 ```
 
 之後將 dist/ 資料夾內容部署到 wwwroot 或其他靜態主機
-
-## Github Page 部屬
-
-本專案前端會自動部署至 GitHub Pages，需至 GitHub 頁面中的 Settings > Pages 中設定，並在Action頁面中啟用Workflows。
-
-- 分支：gh-pages
-
-- 資料夾：/(root)
-
-GitHub 會自動為你建立一個公開的預覽頁面。
