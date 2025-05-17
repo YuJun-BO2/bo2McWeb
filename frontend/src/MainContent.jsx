@@ -29,11 +29,6 @@ function MainContent() {
                     >
                         登入帳號
                     </a>
-                    <a
-                        className="cursor-pointer px-6 py-3 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-                    >
-                        初次設置
-                    </a>
                 </div>
             </div>
         </motion.div>
