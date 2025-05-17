@@ -1,6 +1,6 @@
 # bo2McWeb
 
-**bo2McWeb** 是為 [bo2 Minecraft 社群](https://yujun-bo2.github.io/bo2McWeb/)(目前僅demo) 所打造的網站前後端系統，用於展示玩家資訊、活動公告、伺服器狀態等。
+**bo2McWeb** 是為 [bo2 Minecraft 社群](https://mcc.bo2.tw)(目前僅demo) 所打造的網站前後端系統，用於展示玩家資訊、活動公告、伺服器狀態等。
 
 ## 🔧 專案架構
 

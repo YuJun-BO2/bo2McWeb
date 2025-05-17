@@ -53,7 +53,17 @@ $context = stream_context_create($opts);
 $user_info = file_get_contents($user_info_url, false, $context);
 $user = json_decode($user_info, true);
 
-// 3. 顯示使用者資料或建立 session
-echo "登入成功，歡迎 " . htmlspecialchars($user['username']) . "#" . $user['discriminator'];
-// 你可以在這裡設定 session 或 redirect 回首頁
-?>
+// 3. 查詢資料庫中是否已經存在這個 Discord 使用者
+$discordID = $user['id'];  // 從 Discord API 拿到的 ID
+
+// 呼叫平行目錄的 checkaccount.php
+$check_url = "http://localhost/checkaccount.php?discordID=" . urlencode($discordID);
+$check_response = file_get_contents($check_url);
+$check_result = json_decode($check_response, true);
+
+// 加入回應
+$user['account_exists'] = $check_result['exists'] ?? false;
+
+// 4. 輸出整合後的 JSON 回應
+header('Content-Type: application/json');
+echo json_encode($user, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);

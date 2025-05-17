@@ -20,3 +20,7 @@ npm run build
 ```
 
 之後將 dist/ 資料夾內容部署到 wwwroot 或其他靜態主機
+
+## 自動部屬
+
+前端部分會自動部屬至[bo2 Minecraft Community](https://mcc.bo2.tw)網站，後端API目前需手動部屬。
