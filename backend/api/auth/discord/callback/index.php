@@ -66,17 +66,27 @@ $user['account_exists'] = $check_result['exists'] ?? false;
 
 // 4. 如果帳號不存在，重新導向到 /NewAccount/index.php 建立帳號
 if (!$check_result['exists']) {
-    $params = http_build_query([
+    // 加入 HMAC 數位簽章
+    $secret = $config['ACCOUNT_SIGN_SECRET'];
+
+    // 建立資料陣列
+    $accountData = [
         'id' => $user['id'],
         'username' => $user['username'],
         'avatar' => $user['avatar'] ?? null
-    ]);
+    ];
 
-    // 執行 HTTP redirect（302）
+    // 將資料轉成 query string，並建立簽章
+    $data_query = http_build_query($accountData);
+    $signature = hash_hmac('sha256', $data_query, $secret);
+
+    // 加上簽章參數
+    $accountData['sig'] = $signature;
+
+    // 組合完整參數
+    $params = http_build_query($accountData);
+
+    // 使用相對路徑導向
     header("Location: NewAccount/index.php?$params");
     exit;
 }
-
-// // 最後輸出 JSON 結果
-// header('Content-Type: application/json');
-// echo json_encode($user, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);

@@ -3,22 +3,13 @@
 
 header('Content-Type: application/json');
 
+// 載入資料庫與驗證用密鑰
 $config = require __DIR__ . '/../db.env.php';
+$auth = require __DIR__ . '/../auth.env.php';
+$secret = $auth['ACCOUNT_SIGN_SECRET'] ?? '';
 
-try {
-    $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset=utf8mb4";
-    $pdo = new PDO($dsn, $config['user'], $config['password'], [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['error' => '資料庫連線失敗', 'details' => $e->getMessage()]);
-    exit;
-}
-
-// 檢查 GET 資料
-$required = ['id', 'username'];
+// 驗證必要欄位
+$required = ['id', 'username', 'sig'];
 foreach ($required as $field) {
     if (!isset($_GET[$field])) {
         http_response_code(400);
@@ -27,6 +18,25 @@ foreach ($required as $field) {
     }
 }
 
+// 建立要驗證的原始資料組合（順序與 callback.php 中一致）
+$check_params = [
+    'id' => $_GET['id'],
+    'username' => $_GET['username'],
+    'avatar' => $_GET['avatar'] ?? null
+];
+
+// 產生應該的簽章
+$original_query = http_build_query($check_params);
+$expected_sig = hash_hmac('sha256', $original_query, $secret);
+
+// 比對簽章
+if (!hash_equals($expected_sig, $_GET['sig'])) {
+    http_response_code(403);
+    echo json_encode(['error' => '簽章驗證失敗']);
+    exit;
+}
+
+// 資料準備
 $discordID = $_GET['id'];
 $discordName = $_GET['username'];
 $mccName = $discordName;
@@ -39,6 +49,20 @@ $uuid_formatted = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($uuid, 4));
 // 用戶 IP
 $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 
+// 建立資料庫連線
+try {
+    $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset=utf8mb4";
+    $pdo = new PDO($dsn, $config['user'], $config['password'], [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(['error' => '資料庫連線失敗', 'details' => $e->getMessage()]);
+    exit;
+}
+
+// 寫入資料庫
 try {
     $stmt = $pdo->prepare("
         INSERT INTO Accounts (
@@ -57,7 +81,6 @@ try {
         'last_IP' => $ip
     ]);
 
-    // 回傳成功與所有建立的欄位
     echo json_encode([
         'success' => true,
         'uuid' => $uuid_formatted,
