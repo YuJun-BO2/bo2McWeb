@@ -13,7 +13,7 @@ $required = ['id', 'username', 'sig'];
 foreach ($required as $field) {
     if (!isset($_GET[$field])) {
         http_response_code(400);
-        echo json_encode(['error' => "缺少必要欄位: $field"]);
+        echo json_encode(['error' => "缺少必要欄位: $field"], JSON_UNESCAPED_UNICODE);
         exit;
     }
 }
@@ -32,7 +32,7 @@ $expected_sig = hash_hmac('sha256', $original_query, $secret);
 // 比對簽章
 if (!hash_equals($expected_sig, $_GET['sig'])) {
     http_response_code(403);
-    echo json_encode(['error' => '簽章驗證失敗']);
+    echo json_encode(['error' => '簽章驗證失敗'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -58,7 +58,7 @@ try {
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['error' => '資料庫連線失敗', 'details' => $e->getMessage()]);
+    echo json_encode(['error' => '資料庫連線失敗', 'details' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -89,8 +89,8 @@ try {
         'discordAvatar' => $discordAvatar,
         'mccName' => $mccName,
         'last_IP' => $ip
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['error' => '建立帳號失敗', 'details' => $e->getMessage()]);
+    echo json_encode(['error' => '建立帳號失敗', 'details' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }
