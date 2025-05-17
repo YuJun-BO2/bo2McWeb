@@ -61,9 +61,22 @@ $check_url = "http://localhost/checkaccount.php?discordID=" . urlencode($discord
 $check_response = file_get_contents($check_url);
 $check_result = json_decode($check_response, true);
 
-// 加入回應
+// 記錄結果
 $user['account_exists'] = $check_result['exists'] ?? false;
 
-// 4. 輸出整合後的 JSON 回應
-header('Content-Type: application/json');
-echo json_encode($user, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+// 4. 如果帳號不存在，重新導向到 /NewAccount/index.php 建立帳號
+if (!$check_result['exists']) {
+    $params = http_build_query([
+        'id' => $user['id'],
+        'username' => $user['username'],
+        'avatar' => $user['avatar'] ?? null
+    ]);
+
+    // 執行 HTTP redirect（302）
+    header("Location: NewAccount/index.php?$params");
+    exit;
+}
+
+// // 最後輸出 JSON 結果
+// header('Content-Type: application/json');
+// echo json_encode($user, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
