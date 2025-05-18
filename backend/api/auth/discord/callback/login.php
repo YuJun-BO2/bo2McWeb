@@ -83,3 +83,5 @@ echo json_encode([
     'message' => '登入成功',
     'session' => $_SESSION
 ], JSON_UNESCAPED_UNICODE);
+
+header("Location: /");
