@@ -92,6 +92,20 @@ if (!$user['account_exists']) {
     exit;
 }
 
-//  5. 使用者存在，回傳 JSON（可改為跳轉前端頁面）
-header('Content-Type: application/json');
-echo json_encode($user, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+// 5. 使用者存在 → 導向 login.php 建立 session
+$secret = $config['ACCOUNT_SIGN_SECRET'];
+$timestamp = time();
+$discordID = $user['id'];
+
+// 建立簽章（防止偽造）
+$sig = hash_hmac('sha256', "$discordID|$timestamp", $secret);
+
+// 組合參數並導向
+$params = http_build_query([
+    'discordID' => $discordID,
+    'ts' => $timestamp,
+    'sig' => $sig
+]);
+
+header("Location: login.php?$params");
+exit;

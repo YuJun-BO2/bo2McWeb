@@ -99,3 +99,16 @@ try {
         'details' => $e->getMessage()
     ], JSON_UNESCAPED_UNICODE);
 }
+
+// 寫入成功之後導向 login.php
+$timestamp = time();
+$login_sig = hash_hmac('sha256', "$discordID|$timestamp", $secret);
+
+$params = http_build_query([
+    'discordID' => $discordID,
+    'ts' => $timestamp,
+    'sig' => $login_sig
+]);
+
+header("Location: ../login.php?$params"); // 注意這裡
+exit;
