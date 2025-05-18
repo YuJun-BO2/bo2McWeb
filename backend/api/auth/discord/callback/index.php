@@ -76,13 +76,15 @@ try {
 // 4. 如果帳號不存在，導向建立帳號頁面
 if (!$user['account_exists']) {
     $secret = $config['ACCOUNT_SIGN_SECRET'];
+    $timestamp = time();
+
     $accountData = [
         'id' => $user['id'],
         'username' => $user['username'],
-        'avatar' => $user['avatar'] ?? null
+        'avatar' => $user['avatar'] ?? null,
+        'ts' => $timestamp
     ];
-    $data_query = http_build_query($accountData);
-    $signature = hash_hmac('sha256', $data_query, $secret);
+    $signature = hash_hmac('sha256', "{$accountData['id']}|$timestamp", $secret);
     $accountData['sig'] = $signature;
 
     $params = http_build_query($accountData);

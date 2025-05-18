@@ -3,13 +3,13 @@
 
 header('Content-Type: application/json');
 
-// 載入資料庫與驗證用密鑰
+// 載入設定
 $config = require __DIR__ . '/../db.env.php';
 $auth = require __DIR__ . '/../auth.env.php';
 $secret = $auth['ACCOUNT_SIGN_SECRET'] ?? '';
 
 // 驗證必要欄位
-$required = ['id', 'username', 'sig'];
+$required = ['id', 'username', 'ts', 'sig'];
 foreach ($required as $field) {
     if (!isset($_GET[$field])) {
         http_response_code(400);
@@ -18,35 +18,35 @@ foreach ($required as $field) {
     }
 }
 
-// 建立要驗證的原始資料組合（順序與 callback.php 中一致）
-$check_params = [
-    'id' => $_GET['id'],
-    'username' => $_GET['username'],
-    'avatar' => $_GET['avatar'] ?? null
-];
+// 抽出參數
+$discordID = $_GET['id'];
+$discordName = $_GET['username'];
+$discordAvatar = $_GET['avatar'] ?? null;
+$timestamp = $_GET['ts'];
+$provided_sig = $_GET['sig'];
 
-// 產生應該的簽章
-$original_query = http_build_query($check_params);
-$expected_sig = hash_hmac('sha256', $original_query, $secret);
+// 驗證簽章（固定格式：id|ts）
+$expected_sig = hash_hmac('sha256', "$discordID|$timestamp", $secret);
 
-// 比對簽章
-if (!hash_equals($expected_sig, $_GET['sig'])) {
+if (!hash_equals($expected_sig, $provided_sig)) {
     http_response_code(403);
     echo json_encode(['error' => '簽章驗證失敗'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// 資料準備
-$discordID = $_GET['id'];
-$discordName = $_GET['username'];
-$mccName = $discordName;
-$discordAvatar = $_GET['avatar'] ?? null;
+// 驗證時間是否過期（例如 5 秒內有效）
+$allowed_delay = 5; // 單位：秒
 
-// 產生 UUID
+if (abs(time() - (int)$timestamp) > $allowed_delay) {
+    http_response_code(403);
+    echo json_encode(['error' => '簽章已過期'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+// 設定其他欄位
+$mccName = $discordName;
 $uuid = bin2hex(random_bytes(16));
 $uuid_formatted = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($uuid, 4));
-
-// 用戶 IP
 $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 
 // 建立資料庫連線
@@ -62,13 +62,15 @@ try {
     exit;
 }
 
-// 寫入資料庫
+// 寫入資料
 try {
     $stmt = $pdo->prepare("
         INSERT INTO Accounts (
-            uuid, discordID, discordName, mccName, discordAvatar, banned, last_IP, created_at, last_login
+            uuid, discordID, discordName, mccName, discordAvatar,
+            banned, last_IP, created_at, last_login
         ) VALUES (
-            :uuid, :discordID, :discordName, :mccName, :discordAvatar, 0, :last_IP, NOW(), NOW()
+            :uuid, :discordID, :discordName, :mccName, :discordAvatar,
+            0, :last_IP, NOW(), NOW()
         )
     ");
 
@@ -92,5 +94,8 @@ try {
     ], JSON_UNESCAPED_UNICODE);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['error' => '建立帳號失敗', 'details' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    echo json_encode([
+        'error' => '建立帳號失敗',
+        'details' => $e->getMessage()
+    ], JSON_UNESCAPED_UNICODE);
 }
