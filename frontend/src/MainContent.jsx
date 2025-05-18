@@ -8,7 +8,7 @@ function MainContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.2 }}
-            className="w-full bg-white/90 text-black px-10 py-10 rounded-xl shadow-lg"
+            className="w-full bg-white/80 text-black px-10 py-10 rounded-xl shadow-lg backdrop-blur-lg"
         >
             <h1 className="text-2xl font-bold mb-6 text-left">歡迎來到 Bo2 主頁</h1>
 
