@@ -1,8 +1,33 @@
 <?php
 // login.php
 
+// 設定 session 有效時間：180 天（秒）
+$session_lifetime = 180 * 24 * 60 * 60; // 15552000 秒
+
+// 設定 Cookie 的屬性（安全、持久）
+session_set_cookie_params([
+    'lifetime' => $session_lifetime,
+    'path' => '/',
+    'secure' => true,       // 僅 HTTPS 才送 cookie
+    'httponly' => true,     // 禁止 JavaScript 存取 cookie
+    'samesite' => 'Lax'     // 防止跨站請求送 cookie（避免 CSRF）
+]);
+
+// 設定伺服器端 session 的保存時間
+ini_set('session.gc_maxlifetime', $session_lifetime);
+
+// 開啟 session
 session_start();
 header('Content-Type: application/json');
+
+// 額外手動強制重新送 Cookie（確保瀏覽器寫入 180 天）
+setcookie(session_name(), session_id(), [
+    'expires' => time() + $session_lifetime,
+    'path' => '/',
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
 
 // 載入設定
 $config = require __DIR__ . '/db.env.php';
@@ -26,7 +51,6 @@ $allowed_delay = 5;
 
 // 產生預期簽章並驗證
 $expected_sig = hash_hmac('sha256', "$discordID|$timestamp", $secret);
-
 if (!hash_equals($expected_sig, $sig)) {
     http_response_code(403);
     echo json_encode(['error' => '簽章驗證失敗'], JSON_UNESCAPED_UNICODE);
@@ -78,10 +102,6 @@ $_SESSION['setup_status'] = $user['setup_status'];
 $_SESSION['minecraftUUID'] = $user['minecraftUUID'];
 $_SESSION['banned'] = (bool)$user['banned'];
 
-echo json_encode([
-    'success' => true,
-    'message' => '登入成功',
-    'session' => $_SESSION
-], JSON_UNESCAPED_UNICODE);
-
+// 導向首頁（可改成 dashboard）
 header("Location: /");
+exit;
