@@ -1,6 +1,7 @@
 <?php
 // callback.php
 $config = require __DIR__ . '/auth.env.php';
+$db = require __DIR__ . '/db.env.php';
 
 $client_id = $config['DISCORD_CLIENT_ID'];
 $client_secret = $config['DISCORD_CLIENT_SECRET'];
@@ -54,39 +55,41 @@ $user_info = file_get_contents($user_info_url, false, $context);
 $user = json_decode($user_info, true);
 
 // 3. 查詢資料庫中是否已經存在這個 Discord 使用者
-$discordID = $user['id'];  // 從 Discord API 拿到的 ID
+try {
+    $dsn = "mysql:host={$db['host']};dbname={$db['dbname']};charset=utf8mb4";
+    $pdo = new PDO($dsn, $db['user'], $db['password'], [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
 
-// 呼叫平行目錄的 checkaccount.php
-$check_url = "http://localhost/checkaccount.php?discordID=" . urlencode($discordID);
-$check_response = file_get_contents($check_url);
-$check_result = json_decode($check_response, true);
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM Accounts WHERE discordID = ?");
+    $stmt->execute([$user['id']]);
+    $account_exists = $stmt->fetchColumn() > 0;
 
-// 記錄結果
-$user['account_exists'] = $check_result['exists'] ?? false;
+    $user['account_exists'] = $account_exists;
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(['error' => '資料庫查詢失敗', 'details' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
-// 4. 如果帳號不存在，重新導向到 /NewAccount/index.php 建立帳號
-if (!$check_result['exists']) {
-    // 加入 HMAC 數位簽章
+// 4. 如果帳號不存在，導向建立帳號頁面
+if (!$user['account_exists']) {
     $secret = $config['ACCOUNT_SIGN_SECRET'];
-
-    // 建立資料陣列
     $accountData = [
         'id' => $user['id'],
         'username' => $user['username'],
         'avatar' => $user['avatar'] ?? null
     ];
-
-    // 將資料轉成 query string，並建立簽章
     $data_query = http_build_query($accountData);
     $signature = hash_hmac('sha256', $data_query, $secret);
-
-    // 加上簽章參數
     $accountData['sig'] = $signature;
 
-    // 組合完整參數
     $params = http_build_query($accountData);
-
-    // 使用相對路徑導向
     header("Location: NewAccount/index.php?$params");
     exit;
 }
+
+//  5. 使用者存在，回傳 JSON（可改為跳轉前端頁面）
+header('Content-Type: application/json');
+echo json_encode($user, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
