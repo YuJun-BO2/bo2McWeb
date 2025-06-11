@@ -93,6 +93,13 @@ if (!$user) {
     exit;
 }
 
+// 取得使用者 IP
+$ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+// 更新登入時間與 IP
+$update = $pdo->prepare("UPDATE Accounts SET last_login = NOW(), last_IP = ? WHERE uuid = ?");
+$update->execute([$ip, $user['uuid']]);
+
 // 建立 session（登入成功）
 $_SESSION['uuid'] = $user['uuid'];
 $_SESSION['discordID'] = $user['discordID'];

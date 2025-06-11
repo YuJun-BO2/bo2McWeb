@@ -1,31 +1,40 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import { AnimatePresence } from 'framer-motion';
 import Entrance from './Entrance.jsx'
 import MainContent from './MainContent.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [entered, setEntered] = useState(false); // 決定是否顯示Entrance
+  const [entered, setEntered] = useState(false)
+  const [loading, setLoading] = useState(true) // 新增 loading 狀態
+
+  useEffect(() => {
+    fetch('/api/session-check.php', { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        setEntered(!!data.loggedIn)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen font-sans text-gray-800 items-center justify-center">
+        <p>載入中...</p>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col min-h-screen font-sans text-gray-800">
-      {/* 導覽列 */}
-      <header className="bg-gray-900/80 text-white px-6 py-4 flex justify-between items-center">
-        <div className="text-xl font-bold"><a href="/">Bo2 Minecraft Community</a></div>
-        <nav className="space-x-6">
-          <a href="announcement" className="hover:underline">公告</a>
-          <a href="status" className="hover:underline">狀態</a>
-          <a href="support" className="hover:underline">支援</a>
-        </nav>
-      </header>
-
-      {/* 主要內容 */}
+      {/* ...existing code... */}
       <main className="flex-grow flex flex-col items-center justify-center text-center p-4">
         <AnimatePresence mode="wait">
           {!entered ? (
-          <Entrance key="entrance" onEnter={() => setEntered(true)} />
+            <Entrance key="entrance" onEnter={() => setEntered(true)} />
           ) : (
-          <MainContent key="main" />
+            <MainContent key="main" />
           )}
         </AnimatePresence>
       </main>
