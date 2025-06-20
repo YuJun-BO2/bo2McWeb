@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
-import './App.css'
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import Entrance from './Entrance.jsx'
-import MainContent from './MainContent.jsx'
+import './App.css';
+import Entrance from './Entrance.jsx';
+import MainContent from './MainContent.jsx';
 
 function App() {
   const [entered, setEntered] = useState(false)
@@ -27,23 +28,26 @@ function App() {
   }
 
   return (
+  <BrowserRouter>
     <div className="flex flex-col min-h-screen font-sans text-gray-800">
-      {/* ...existing code... */}
       <main className="flex-grow flex flex-col items-center justify-center text-center p-4">
         <AnimatePresence mode="wait">
-          {!entered ? (
-            <Entrance key="entrance" onEnter={() => setEntered(true)} />
-          ) : (
-            <MainContent key="main" />
-          )}
+          <Routes>
+            <Route path="/" element={
+              !entered ? (
+                <Entrance key="entrance" onEnter={() => setEntered(true)} />
+              ) : (
+                <MainContent key="main" />
+              )
+            } />
+          </Routes>
         </AnimatePresence>
       </main>
-
-      {/* 頁尾 */}
       <footer className="bg-gray-200/60 text-center text-sm text-gray-800 py-4">
         IP: Ocean.bo2.tw
       </footer>
     </div>
+  </BrowserRouter>
   )
 }
 

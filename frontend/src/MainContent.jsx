@@ -33,11 +33,11 @@ function MainContent() {
             <h1 className="text-2xl font-bold mb-6 text-left">歡迎來到 Bo2 主頁</h1>
 
             <div className="flex flex-col items-center gap-4 border-2 border-gray-300 rounded-lg py-8 px-8 sm:px-12 md:px-30 lg:px-45 xl:px-75 2xl:px-120 md:flex-row md:items-center md:justify-between">
-                <img
+                {/* <img
                     src="https://crafatar.com/renders/body/1c62a0f42337441c833560ca98e5c9e4"
                     alt="player"
                     className="w-32"
-                />
+                /> */}
 
                 <div className="flex flex-col items-center md:items-start gap-4 md:ml-8">
                     {!session && (
